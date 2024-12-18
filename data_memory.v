@@ -19,13 +19,9 @@ module data_memory(A, WD, clk, WE, RD);
     integer i;
 
     initial begin
-
         for (i = 0; i < 4096; i = i + 1) begin
             memory[i] = 32'b0;    // // Initializing all memory to zero
         end
-
-        memory[10] = 32'd100; // data at address 10 for testing
-
     end
 
     assign RD = memory[A];
