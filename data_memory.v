@@ -7,7 +7,7 @@ module data_memory(A, WD, clk, WE, RD);
        3) clk, which is the clock signal.
        4) WE, which is the write enable signal.
      - The module has an output RD which is the data read.
-     Note: A is 12 bits as the size of instruction memory is 16 KB.
+     Note: A is 12 bits as the size of data memory is 16 KB.
   */
   
     input wire [11:0] A;
