@@ -17,6 +17,7 @@ module register_file(RA1, RA2, WA, WE, WD, clk, RD1, RD2);
     input wire clk, WE;
     input wire [31:0] WD;
     output wire [31:0] RD1, RD2;
+
     reg [31:0] regFile [0:31];
     integer i;
 
