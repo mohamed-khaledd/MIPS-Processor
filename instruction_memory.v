@@ -8,6 +8,7 @@ module instruction_memory(A, RD);
   
     input wire [9:0] A;
     output wire [31:0] RD;
+ 
     reg [31:0] memory [0:1023];
     integer i;
 
