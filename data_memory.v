@@ -15,7 +15,7 @@ module DataMemory(
      - The module has an output read_data which is the data read.
   */
   
-    reg [31:0] memory [0:4095];
+    reg [31:0] memory [0:4095];  // 16 KB (4096 locations) 
     integer i;
 
     initial begin
@@ -24,7 +24,7 @@ module DataMemory(
         end
     end
 
-    assign read_data = memory[addr[31:2]];
+    assign read_data = memory[addr[31:2]];  // word addressing, Least significant 2 bits are zeros
 
     always @(posedge clk) begin
         if (write_enable)
