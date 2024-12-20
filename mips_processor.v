@@ -48,7 +48,7 @@ module SingleCycleMIPSProcessor(
     wire MemtoReg, MemWrite, ALUSrc, Branch, RegDst, Jump;
     wire [2:0] ALUControl;
 
-    ControlUnit control(
+    ControlUnit cu(
         .opcode(Op),
         .funct(Funct),
         .mem_to_reg(MemtoReg),
@@ -98,7 +98,7 @@ module SingleCycleMIPSProcessor(
     // Data Memory
     wire [31:0] ReadData;
 
-    DataMemory dataMem(
+    DataMemory dm(
         .clk(clk),
         .addr(ALUResult),
         .write_data(ReadData2),
