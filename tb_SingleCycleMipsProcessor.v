@@ -35,7 +35,7 @@ module tb_SingleCycleMIPSProcessor;
         uut.rf.regFile[11] = 32'd42;  // $t3
       
         // Initializing data memory at location 10
-        uut.dm.memory[12] = 32'd100; 
+        uut.dm.memory[4] = 32'd100; 
  
         #200 $stop;
     end
@@ -43,7 +43,7 @@ module tb_SingleCycleMIPSProcessor;
     // Monitoring signals
     initial begin
         $monitor("Time: %0d, PC: %h, Instr: %h, RD1: %h, RD2: %h, ALUResult: %h, MemReadData: %h", 
-                 $time, uut.pc, uut.instr, uut.rd1, uut.rd2, uut.alu_result, uut.read_data);
+                 $time, uut.PC, uut.Instr, uut.ReadData1, uut.ReadData2, uut.ALUResult, uut.ReadData);
     end
 endmodule
 
