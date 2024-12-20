@@ -20,12 +20,12 @@ module tb_mips_processor;
 
         // Loading instructions into instruction memory
         uut.im.memory[0] = 32'b000000_01000_01010_01001_00000_100000;  // add $t1, $t0, $t2
-        uut.im.memory[1] = 32'b000000_01000_01001_01010_00000_100010;  // sub $t2, $t0, $t1
+        uut.im.memory[1] = 32'b000000_01001_01000_01100_00000_100010;  // sub $t4, $t1, $t0
         uut.im.memory[2] = 32'b100011_01000_01010_0000000000000000;    // lw $t2, 0($t0)
         uut.im.memory[3] = 32'b101011_01000_01011_0000000000000100;    // sw $t3, 4($t0)
         uut.im.memory[4] = 32'b000100_01011_01001_0000000000000001;    // beq $t3, $t1, label
         uut.im.memory[5] = 32'b000000_01000_01010_01101_00000_100000;  // add $t5, $t0, $t2 (to be skipped if branch is taken)
-        uut.im.memory[6] = 32'b101011_01000_01101_0000000000001000;    // sw $t5, 8($t0)
+        uut.im.memory[6] = 32'b101011_01000_01100_0000000000001000;    // sw $t4, 8($t0)
 
 
         // Initializing  $t0,$t1,$t2
@@ -46,3 +46,27 @@ module tb_mips_processor;
                  $time, uut.pc, uut.instr, uut.rd1, uut.rd2, uut.alu_result, uut.read_data);
     end
 endmodule
+
+
+/*
+Expected Results:
+------------------
+First instruction "add $t1, $t0, $t2"    -----> $t1 = 10 + 30 = 40
+Second instruction "sub $t4, $t1, $t0"   -----> $t4 = 20 - 10 = 10
+Third instruction "lw $t2, 0($t0)"       -----> $t2 = 100 (the contents of memory location 10)
+Fourth instruction "sw $t3, 4($t0)"      -----> 40 will be stored in memory location ....
+Fifth instruction "beq $t3, $t1, label"  -----> checks wheather $t1 = $t3 or not and branches if equal.
+Sixth instruction "add $t5, $t0, $t2"    -----> this will be skipped
+Seventh instruction "sw $t4, 8($t0)"     -----> 10 will be stored in memory location .... 
+-----------------------------------------------------------------------------------------------
+To check 'add' works correctly: $t1 should contain 40
+To check 'sub' works correctly: $t4 should contain 10
+To check 'lw' works correctly: $t2 should contain 100
+To check 'sw' works correctly: Memory location .... should contain 40
+To check 'beq' works correctly: $t5 should be zero (if it contain 40, then branch is incorrect) + Memory location  ..... should contain 10
+*/
+
+
+
+
+
