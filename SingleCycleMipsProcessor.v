@@ -1,14 +1,35 @@
 module SingleCycleMIPSProcessor(
     input clk,
-    input reset,
+    input reset
 );
 
-    // Instruction Fields:
+    // Instruction Fields
     wire [31:0] Instr;
     wire [5:0] Op,Funct;
     wire [4:0] Rs, Rt, Rd;
     wire [15:0] Immediate;
     wire [25:0] JumpAddr;
+
+    // Program Counter
+    reg [31:0] PC;
+    wire [31:0] PCNext, PCPlus4, BranchAddr;
+    wire [31:0] JumpTarget;
+ 
+    // Control Unit
+    wire MemtoReg, MemWrite, ALUSrc, Branch, RegDst, Jump;
+    wire [2:0] ALUControl;
+
+    // Register File
+    wire [31:0] ReadData1, ReadData2, WriteData;
+    wire RegWrite;
+
+    // ALU 
+    wire [31:0] ALUInput2, ALUResult;
+    wire Zero;
+
+    // Data Memory
+    wire [31:0] ReadData;
+
 
     assign Op = Instr[31:26];
     assign Rs = Instr[25:21];
@@ -18,12 +39,7 @@ module SingleCycleMIPSProcessor(
     assign Immediate = Instr[15:0];
     assign JumpAddr = Instr[25:0];
 
-  
-    // Program Counter:
-    reg [31:0] PC;
-    wire [31:0] PCNext, PCPlus4, BranchAddr;
-    wire [31:0] JumpTarget;
-  
+
     assign PCPlus4 = PC + 4;
     assign JumpTarget = {PCPlus4[31:28], JumpAddr, 2'b00};
     assign BranchAddr = PCPlus4 + ({{16{Immediate[15]}}, Immediate} << 2);
@@ -37,16 +53,13 @@ module SingleCycleMIPSProcessor(
     end
 
     
-    // Instruction Memory
+
     InstructionMemory im(
         .addr(PC),
         .data_out(Instr)
     );
   
 
-    // Control Unit
-    wire MemtoReg, MemWrite, ALUSrc, Branch, RegDst, Jump;
-    wire [2:0] ALUControl;
 
     ControlUnit cu(
         .opcode(Op),
@@ -62,9 +75,7 @@ module SingleCycleMIPSProcessor(
     );
 
   
-    // Register File
-    wire [31:0] ReadData1, ReadData2, WriteData;
-    wire RegWrite;
+
    
     assign WriteData = (MemtoReg) ? ReadData : ALUResult;
 
@@ -80,9 +91,7 @@ module SingleCycleMIPSProcessor(
     );
 
   
-    // ALU
-    wire [31:0] ALUInput2, ALUResult;
-    wire Zero;
+ 
 
     assign ALUInput2 = (ALUSrc) ? {{16{Immediate[15]}}, Immediate} : ReadData2;
 
@@ -95,8 +104,7 @@ module SingleCycleMIPSProcessor(
     );
 
     
-    // Data Memory
-    wire [31:0] ReadData;
+
 
     DataMemory dm(
         .clk(clk),
