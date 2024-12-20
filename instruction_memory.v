@@ -8,7 +8,7 @@ module InstructionMemory(
      - The module has an output data_out which is the instruction read.
   */
  
-    reg [31:0] memory [0:1023];
+    reg [31:0] memory [0:1023];  // 4 KB (1024 locations)
     integer i;
 
     initial begin        
