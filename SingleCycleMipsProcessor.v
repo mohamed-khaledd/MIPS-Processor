@@ -56,7 +56,7 @@ module SingleCycleMIPSProcessor(
         .alu_src(ALUSrc),
         .branch(Branch),
         .reg_dst(RegDst),
-        .write_enable(RegWrite),
+        .reg_write(RegWrite),
         .jump(Jump),
         .alu_control(ALUControl)
     );
@@ -102,7 +102,7 @@ module SingleCycleMIPSProcessor(
         .clk(clk),
         .addr(ALUResult),
         .write_data(ReadData2),
-        .mem_write(MemWrite),
+        .write_enable(MemWrite),
         .read_data(ReadData)
     );
   
