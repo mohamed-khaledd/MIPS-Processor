@@ -65,8 +65,3 @@ To check 'lw' works correctly: $t2 should contain 100
 To check 'sw' works correctly: Memory location .... should contain 40
 To check 'beq' works correctly: $t5 should be zero (if it contain 40, then branch is incorrect) + Memory location  ..... should contain 10
 */
-
-
-
-
-
