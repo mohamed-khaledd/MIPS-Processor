@@ -6,7 +6,6 @@ module InstructionMemory(
   /* Module Description:
      - The module has an input addr which is the address of the instruction to be fetched.
      - The module has an output data_out which is the instruction read.
-     Note: A is 10 bits as the size of instruction memory is 4 KB.
   */
  
     reg [31:0] memory [0:1023];
