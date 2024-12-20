@@ -4,7 +4,7 @@ module tb_SingleCycleMIPSProcessor;
     // Instantiation of the MIPS processor
     SingleCycleMIPSProcessor uut (
         .clk(clk),
-        .rst(rst)
+        .reset(rst)
     );
 
     // Clock generation
