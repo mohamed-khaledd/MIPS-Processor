@@ -1,56 +1,109 @@
-module mips_processor(clk, rst);
+module SingleCycleMIPSProcessor(
+    input clk,
+    input reset,
+);
+
+    // Instruction Fields:
+    wire [31:0] Instr;
+    wire [5:0] Op,Funct;
+    wire [4:0] Rs, Rt, Rd;
+    wire [15:0] Immediate;
+    wire [25:0] JumpAddr;
+
+    assign Op = Instr[31:26];
+    assign Rs = Instr[25:21];
+    assign Rt = Instr[20:16];
+    assign Rd = Instr[15:11];
+    assign Funct = Instr[5:0];
+    assign Immediate = Instr[15:0];
+    assign JumpAddr = Instr[25:0];
+
   
-  input clk, rst;
+    // Program Counter:
+    reg [31:0] PC;
+    wire [31:0] PCNext, PCPlus4, BranchAddr;
+    wire [31:0] JumpTarget;
   
-  reg [31:0] pc;
-  wire [31:0] instr, rd1, rd2, signImm, alu_result, read_data, srcb, Result;
-  wire [4:0] WriteReg;
-  wire [2:0] alu_control;
-  wire MemtoReg, MemWrite, Branch, ALUSrc, RegDst, RegWrite, jump, zero;
-  wire [31:0] pc_next, pc_branch, pc4;
+    assign PCPlus4 = PC + 4;
+    assign JumpTarget = {PCPlus4[31:28], JumpAddr, 2'b00};
+    assign BranchAddr = PCPlus4 + ({{16{Immediate[15]}}, Immediate} << 2);
+    assign PCNext = (Jump) ? JumpTarget : (Branch & Zero) ? BranchAddr : PCPlus4;
+ 
+    always @(posedge clk or posedge reset) begin
+        if (reset)
+            PC <= 0;
+        else
+            PC <= PCNext;
+    end
 
-  // Program Counter Logic
-
-  assign pc4 = pc + 4;
-  assign pc_branch = pc4 + (signImm << 2);
-  assign pc_next = (jump) ? {pc[31:28], instr[25:0], 2'b00} : ((Branch & zero) ? pc_branch : pc4);
-
-  always @(posedge clk or posedge rst) begin
-    if (rst) 
-      pc <= 0;
-    else 
-      pc <= pc_next;
-  end
-
-   ///// Modules Instantiation: ////
+    
+    // Instruction Memory
+    InstructionMemory im(
+        .addr(PC),
+        .data_out(Instr)
+    );
   
-  // Instruction Memory:
-  instruction_memory im(pc[11:2], instr);
 
+    // Control Unit
+    wire MemtoReg, MemWrite, ALUSrc, Branch, RegDst, Jump;
+    wire [2:0] ALUControl;
 
-  // Register file:
-  assign WriteReg = (RegDst) ? instr[15:11] : instr[20:16];
-  register_file rf(instr[25:21], instr[20:16], WriteReg, RegWrite, Result, clk, rd1, rd2);
+    ControlUnit control(
+        .opcode(Op),
+        .funct(Funct),
+        .mem_to_reg(MemtoReg),
+        .mem_write(MemWrite),
+        .alu_src(ALUSrc),
+        .branch(Branch),
+        .reg_dst(RegDst),
+        .write_enable(RegWrite),
+        .jump(Jump),
+        .alu_control(ALUControl)
+    );
 
+  
+    // Register File
+    wire [31:0] ReadData1, ReadData2, WriteData;
+    wire RegWrite;
+   
+    assign WriteData = (MemtoReg) ? ReadData : ALUResult;
 
-  // Sign Extension unit:
-  sign_extension se(instr[15:0], signImm);
+    RegisterFile rf(
+        .clk(clk),
+        .read_reg1(Rs),
+        .read_reg2(Rt),
+        .write_reg((RegDst) ? Rd : Rt),
+        .write_data(WriteData),
+        .write_enable(RegWrite),
+        .read_data1(ReadData1),
+        .read_data2(ReadData2)
+    );
 
+  
+    // ALU
+    wire [31:0] ALUInput2, ALUResult;
+    wire Zero;
 
-  // Control unit:
-  control_unit cu(instr[31:26], instr[5:0], MemtoReg, MemWrite, Branch, alu_control, ALUSrc, RegDst, RegWrite, jump);
+    assign ALUInput2 = (ALUSrc) ? {{16{Immediate[15]}}, Immediate} : ReadData2;
 
+    ALU alu(
+        .input1(ReadData1),
+        .input2(ALUInput2),
+        .alu_control(ALUControl),
+        .zero(Zero),
+        .result(ALUResult)
+    );
 
-  // ALU:
-  assign srcb = (ALUSrc) ? signImm : rd2;
-  ALU alu(rd1, srcb, alu_control, zero, alu_result);
+    
+    // Data Memory
+    wire [31:0] ReadData;
 
-
-  // Data Memory:
-  data_memory dm(alu_result[11:2], rd2, clk, MemWrite, read_data);
-
-
-  // Result Selection:
-  assign Result = (MemtoReg) ? read_data : alu_result;
-
+    DataMemory dataMem(
+        .clk(clk),
+        .addr(ALUResult),
+        .write_data(ReadData2),
+        .mem_write(MemWrite),
+        .read_data(ReadData)
+    );
+  
 endmodule
