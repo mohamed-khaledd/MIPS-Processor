@@ -2,7 +2,7 @@ module tb_mips_processor;
     reg clk, rst;
 
     // Instantiation of the MIPS processor
-    mips_processor uut (
+    SingleCycleMIPSProcessor uut (
         .clk(clk),
         .rst(rst)
     );
@@ -29,13 +29,13 @@ module tb_mips_processor;
 
 
         // Initializing  $t0,$t1,$t2
-        uut.rf.regFile[8] = 32'd10;   // $t0 
+        uut.rf.regFile[8] = 32'd12;   // $t0 
         uut.rf.regFile[9] = 32'd20;   // $t1 
         uut.rf.regFile[10] = 32'd30;  // $t2
-        uut.rf.regFile[11] = 32'd40;  // $t3
+        uut.rf.regFile[11] = 32'd42;  // $t3
       
         // Initializing data memory at location 10
-        uut.dm.memory[10] = 32'd100; 
+        uut.dm.memory[12] = 32'd100; 
  
         #200 $stop;
     end
@@ -51,17 +51,17 @@ endmodule
 /*
 Expected Results:
 ------------------
-First instruction "add $t1, $t0, $t2"    -----> $t1 = 10 + 30 = 40
-Second instruction "sub $t4, $t1, $t0"   -----> $t4 = 20 - 10 = 10
-Third instruction "lw $t2, 0($t0)"       -----> $t2 = 100 (the contents of memory location 10)
-Fourth instruction "sw $t3, 4($t0)"      -----> 40 will be stored in memory location ....
+First instruction "add $t1, $t0, $t2"    -----> $t1 = 12 + 30 = 42
+Second instruction "sub $t4, $t1, $t0"   -----> $t4 = 20 - 12 = 8
+Third instruction "lw $t2, 0($t0)"       -----> $t2 = 100 (the contents of memory address 12)
+Fourth instruction "sw $t3, 4($t0)"      -----> 42 will be stored in memory address 16
 Fifth instruction "beq $t3, $t1, label"  -----> checks wheather $t1 = $t3 or not and branches if equal.
 Sixth instruction "add $t5, $t0, $t2"    -----> this will be skipped
-Seventh instruction "sw $t4, 8($t0)"     -----> 10 will be stored in memory location .... 
+Seventh instruction "sw $t4, 8($t0)"     -----> 8 will be stored in memory address 20
 -----------------------------------------------------------------------------------------------
-To check 'add' works correctly: $t1 should contain 40
-To check 'sub' works correctly: $t4 should contain 10
+To check 'add' works correctly: $t1 should contain 42
+To check 'sub' works correctly: $t4 should contain 8
 To check 'lw' works correctly: $t2 should contain 100
-To check 'sw' works correctly: Memory location .... should contain 40
-To check 'beq' works correctly: $t5 should be zero (if it contain 40, then branch is incorrect) + Memory location  ..... should contain 10
+To check 'sw' works correctly: Memory address 16 should contain 42
+To check 'beq' works correctly: $t5 should be zero (if it contain 42, then branch is incorrect) + Memory address 20 should contain 8
 */
