@@ -1,4 +1,4 @@
-module tb_mips_processor;
+module tb_SingleCycleMIPSProcessor;
     reg clk, rst;
 
     // Instantiation of the MIPS processor
