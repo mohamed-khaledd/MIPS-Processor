@@ -1,19 +1,19 @@
-module data_memory(A, WD, clk, WE, RD);
+module DataMemory(
+    input clk,
+    input [31:0] addr,
+    input [31:0] write_data,
+    input write_enable,
+    output [31:0] read_data
+);
 
   /* Module Description:
      - The module has 4 inputs:
-       1) A, which is the address of the data to be read.
-       2) WD, which is the data to be written in the data memory.
+       1) addr, which is the address of the data to be read.
+       2) write_data, which is the data to be written in the data memory.
        3) clk, which is the clock signal.
-       4) WE, which is the write enable signal.
-     - The module has an output RD which is the data read.
-     Note: A is 12 bits as the size of data memory is 16 KB.
+       4) write_enable, which is the write enable signal.
+     - The module has an output read_data which is the data read.
   */
-  
-    input wire [11:0] A;
-    input wire [31:0] WD;
-    input wire clk, WE;
-    output wire [31:0] RD;
   
     reg [31:0] memory [0:4095];
     integer i;
@@ -24,10 +24,10 @@ module data_memory(A, WD, clk, WE, RD);
         end
     end
 
-    assign RD = memory[A];
+    assign read_data = memory[addr[31:2]];
 
     always @(posedge clk) begin
-        if (WE)
-            memory[A] <= WD;
+        if (write_enable)
+            memory[addr[31:2]] <= write_data;
     end
 endmodule
