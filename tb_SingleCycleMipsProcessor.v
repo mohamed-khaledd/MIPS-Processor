@@ -52,16 +52,16 @@ endmodule
 Expected Results:
 ------------------
 First instruction "add $t1, $t0, $t2"    -----> $t1 = 12 + 30 = 42
-Second instruction "sub $t4, $t1, $t0"   -----> $t4 = 20 - 12 = 8
-Third instruction "lw $t2, 0($t0)"       -----> $t2 = 100 (the contents of memory address 12)
-Fourth instruction "sw $t3, 4($t0)"      -----> 42 will be stored in memory address 16
+Second instruction "sub $t4, $t1, $t0"   -----> $t4 = 42 - 12 = 30
+Third instruction "lw $t2, 0($t0)"       -----> $t2 = 100 (the contents of memory address 12 "4th location")
+Fourth instruction "sw $t3, 4($t0)"      -----> 42 will be stored in memory address 16 "5th location"
 Fifth instruction "beq $t3, $t1, label"  -----> checks wheather $t1 = $t3 or not and branches if equal.
 Sixth instruction "add $t5, $t0, $t2"    -----> this will be skipped
-Seventh instruction "sw $t4, 8($t0)"     -----> 8 will be stored in memory address 20
+Seventh instruction "sw $t4, 8($t0)"     -----> 30 will be stored in memory address 20 "6th location"
 -----------------------------------------------------------------------------------------------
 To check 'add' works correctly: $t1 should contain 42
-To check 'sub' works correctly: $t4 should contain 8
+To check 'sub' works correctly: $t4 should contain 30
 To check 'lw' works correctly: $t2 should contain 100
 To check 'sw' works correctly: Memory address 16 should contain 42
-To check 'beq' works correctly: $t5 should be zero (if it contain 42, then branch is incorrect) + Memory address 20 should contain 8
+To check 'beq' works correctly: $t5 should be zero (if it contain 42, then branch is incorrect) + Memory address 20 should contain 30
 */
