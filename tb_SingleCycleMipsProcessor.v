@@ -63,5 +63,5 @@ To check 'add' works correctly: $t1 should contain 42
 To check 'sub' works correctly: $t4 should contain 30
 To check 'lw' works correctly: $t2 should contain 100
 To check 'sw' works correctly: Memory address 16 should contain 42
-To check 'beq' works correctly: $t5 should be zero (if it contain 42, then branch is incorrect) + Memory address 20 should contain 30
+To check 'beq' works correctly: $t5 should be 32'bx (if it contain 42, then branch is incorrect) + Memory address 20 should contain 30
 */
