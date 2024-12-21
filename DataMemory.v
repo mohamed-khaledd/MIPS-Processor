@@ -16,13 +16,6 @@ module DataMemory(
   */
   
     reg [31:0] memory [0:4095];  // 16 KB (4096 locations) 
-    integer i;
-
-    initial begin
-        for (i = 0; i < 4096; i = i + 1) begin
-            memory[i] = 32'b0;    // // Initializing all memory to zero
-        end
-    end
 
     assign read_data = memory[addr[31:2]];  // word addressing, Least significant 2 bits are zeros
 
