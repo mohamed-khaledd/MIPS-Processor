@@ -9,13 +9,7 @@ module InstructionMemory(
   */
  
     reg [31:0] memory [0:1023];  // 4 KB (1024 locations)
-    integer i;
-
-    initial begin        
-        for (i = 0; i < 1024; i = i + 1) begin
-            memory[i] = 32'b0;    // // Initializing all memory to zero
-        end
-    end
     assign data_out = memory[addr[31:2]];  // word addressing, Least significant 2 bits are zeros
+    
 endmodule
 
