@@ -35,7 +35,7 @@ module tb_SingleCycleMIPSProcessor;
         uut.rf.regFile[11] = 32'd42;  // $t3
       
         // Initializing data memory at location 10
-        uut.dm.memory[4] = 32'd100; 
+        uut.dm.memory[3] = 32'd100; 
  
         #200 $stop;
     end
