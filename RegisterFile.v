@@ -20,13 +20,6 @@ module RegisterFile(
    */
 
     reg [31:0] regFile [0:31];
-    integer i;
-
-    initial begin        
-        for (i = 0; i < 32; i = i + 1) begin
-            regFile[i] = 32'b0;    // Initializing all registers to zero
-        end
-    end
 
     assign read_data1 = regFile[read_reg1];
     assign read_data2 = regFile[read_reg2];
