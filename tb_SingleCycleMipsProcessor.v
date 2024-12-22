@@ -28,13 +28,13 @@ module tb_SingleCycleMIPSProcessor;
         uut.im.memory[6] = 32'b101011_01000_01100_0000000000001000;    // sw $t4, 8($t0)
 
 
-        // Initializing  $t0,$t1,$t2
+        // Initializing  $t0,$t1,$t2,$t3
         uut.rf.regFile[8] = 32'd12;   // $t0 
         uut.rf.regFile[9] = 32'd20;   // $t1 
         uut.rf.regFile[10] = 32'd30;  // $t2
         uut.rf.regFile[11] = 32'd42;  // $t3
       
-        // Initializing data memory at location 10
+        // Initializing data memory at location 4 "memory address 12"
         uut.dm.memory[3] = 32'd100; 
  
         #200 $stop;
